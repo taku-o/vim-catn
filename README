@@ -6,7 +6,7 @@ Insert formatted text with number at selected area.
 You can select "text format", "starting number", and "insert area".
 
 Default value of option are
-text format     : "%d "
+text format     : "%<N>d " (where <N> is 3 or the max length of the line numbers)
 starting number : 1
 insert area     : current line only
 

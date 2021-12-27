@@ -8,13 +8,26 @@
 
 " judge argument count
 :function! s:Catn(...) range
-    :if len(a:000) == 0
-        :call s:CatnFormat("%d ", 1, a:firstline, a:lastline)
-    :elseif len(a:000) == 1
-        :call s:CatnFormat("%d ", a:1, a:firstline, a:lastline)
-    :else
-        :call s:CatnFormat(a:1, a:2, a:firstline, a:lastline)
+    :let l:format = v:null
+    :let l:numbegin = v:null
+
+    :if len(a:000) == 1
+        :let l:numbegin = a:1
+    :elseif len(a:000) >= 2
+        :let l:format = a:1
+        :let l:numbegin = a:2
     :endif
+
+    :if l:numbegin == v:null
+        :let l:numbegin = 1
+    :endif
+
+    :if l:format == v:null
+        :let l:maxnumwidth = max([3] + map([l:numbegin, printf("%d", a:lastline - a:firstline + l:numbegin)], { _, val -> len(val) }))
+        :let l:format = "%" . l:maxnumwidth . "d "
+    :endif
+
+    :call s:CatnFormat(l:format, l:numbegin, a:firstline, a:lastline)
 :endfunction
 
 " insert formated text at left end
@@ -52,7 +65,7 @@ Insert formatted text with number at selected area.
 You can select "text format", "starting number", and "insert area".
 
 Default value of option are
-text format     : "%d "
+text format     : "%<N>d " (where <N> is 3 or the max length of the line numbers)
 starting number : 1
 insert area     : current line only
 
