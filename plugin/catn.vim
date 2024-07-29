@@ -21,14 +21,16 @@
 :function! s:CatnFormat(format, start_no, start, end)
     " loop and insert
     :let l:i = 0
+    :let l:line_fmt = []
     :while (a:start + l:i) <= a:end
         " formated text
         :let l:no_fmt = printf(a:format, a:start_no + l:i)
         " add text
-        :let l:line_fmt = printf("%s%s", l:no_fmt, getline(a:start + l:i))
-        :call setline(a:start + l:i, l:line_fmt)
+        :let l:line_fmt += [printf("%s%s", l:no_fmt, getline(a:start + l:i))]
         :let l:i += 1
     :endwhile
+    :call execute(printf('%d,%d d', a:start, a:end))
+    :call append(a:start - 1, l:line_fmt)
 :endfunction
 
 " command
